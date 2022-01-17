@@ -1,3 +1,5 @@
+using System;
+
 namespace Tennis
 {
     public class TennisGame2 : ITennisGame
@@ -27,6 +29,14 @@ namespace Tennis
             Fifteen = 1,
             Thirty = 2,
             Forty = 3
+        }
+
+        TennisPlayer this[string playerName]
+        {
+            get => player1.Name.Equals(playerName) ? player1 :
+                (player2.Name.Equals(playerName) ? player2 :
+                throw new IndexOutOfRangeException($"Unknown player {playerName}!")
+                );
         }
 
         public TennisGame2(string player1Name, string player2Name)
@@ -85,14 +95,10 @@ namespace Tennis
             player2.Points++;
         }
 
-        public void WonPoint(string player)
+        public void WonPoint(string playerName)
         {
-            if (player == "player1")
-                P1Score();
-            else
-                P2Score();
+            this[playerName].Points++;
         }
-
     }
 }
 
