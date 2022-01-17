@@ -9,8 +9,8 @@ namespace Tennis
         private string p2res = "";
         private string player1Name;
         private string player2Name;
+        private readonly TennisPlayer player1, player2;
 
-        private TennisPlayer player1, player2;
         class TennisPlayer
         {
             public TennisPlayer(string name)
@@ -18,8 +18,9 @@ namespace Tennis
                 Name = name;
             }
             public string Name { get; }
-            public int Score { get; set; }
+            public int Points { get; set; }
         }
+
         enum Scores
         {
             Love = 0,
@@ -33,93 +34,27 @@ namespace Tennis
             this.player1Name = player1Name;
             p1point = 0;
             this.player2Name = player2Name;
+
+            player1 = new TennisPlayer(player1Name);
+            player2 = new TennisPlayer(player2Name);
         }
 
+        private bool IsAll(int score1, int score2) => score1 == score2 && score1 < (int)Scores.Forty;
+        private bool IsDeuce(int score1, int score2) => score1 == score2 && score1 > (int)Scores.Thirty;
+        private bool IsAdvantage(int score1, int score2) => score1 - score2 == 1 && score2 >= (int)Scores.Forty;
+        private bool IsWin(int score1, int score2) => score1 - score2 > 1 && score1 > (int)Scores.Forty && score2 >= (int)Scores.Love;
         public string GetScore()
         {
-            var score = "";
-            if (p1point == p2point && p1point < 3)
+            return (player1, player2) switch
             {
-                if (p1point == 0)
-                    score = "Love";
-                if (p1point == 1)
-                    score = "Fifteen";
-                if (p1point == 2)
-                    score = "Thirty";
-                score += "-All";
-            }
-            if (p1point == p2point && p1point > 2)
-                score = "Deuce";
-
-            if (p1point > 0 && p2point == 0)
-            {
-                if (p1point == 1)
-                    p1res = "Fifteen";
-                if (p1point == 2)
-                    p1res = "Thirty";
-                if (p1point == 3)
-                    p1res = "Forty";
-
-                p2res = "Love";
-                score = p1res + "-" + p2res;
-            }
-            if (p2point > 0 && p1point == 0)
-            {
-                if (p2point == 1)
-                    p2res = "Fifteen";
-                if (p2point == 2)
-                    p2res = "Thirty";
-                if (p2point == 3)
-                    p2res = "Forty";
-
-                p1res = "Love";
-                score = p1res + "-" + p2res;
-            }
-
-            if (p1point > p2point && p1point < 4)
-            {
-                if (p1point == 2)
-                    p1res = "Thirty";
-                if (p1point == 3)
-                    p1res = "Forty";
-                if (p2point == 1)
-                    p2res = "Fifteen";
-                if (p2point == 2)
-                    p2res = "Thirty";
-                score = p1res + "-" + p2res;
-            }
-            if (p2point > p1point && p2point < 4)
-            {
-                if (p2point == 2)
-                    p2res = "Thirty";
-                if (p2point == 3)
-                    p2res = "Forty";
-                if (p1point == 1)
-                    p1res = "Fifteen";
-                if (p1point == 2)
-                    p1res = "Thirty";
-                score = p1res + "-" + p2res;
-            }
-
-            if (p1point > p2point && p2point >= 3)
-            {
-                score = "Advantage player1";
-            }
-
-            if (p2point > p1point && p1point >= 3)
-            {
-                score = "Advantage player2";
-            }
-
-            if (p1point >= 4 && p2point >= 0 && (p1point - p2point) >= 2)
-            {
-                score = "Win for player1";
-            }
-            if (p2point >= 4 && p1point >= 0 && (p2point - p1point) >= 2)
-            {
-                score = "Win for player2";
-            }
-            return score;
+                var (p1, p2) when IsAll(p1.Points, p2.Points) => $"{(Scores)p1.Points}-All",
+                var (p1, p2) when IsDeuce(p1.Points, p2.Points) => "Deuce",
+                var (p1, p2) when IsAdvantage(p1.Points, p2.Points) => $"Advantage {p1.Name}",
+                var (p1, p2) when IsAdvantage(p2.Points, p1.Points) => $"Advantage {p2.Name}",
+                var (p1, p2) when IsWin(p1.Points, p2.Points) => $"Win for {p1.Name}",
+                var (p1, p2) when IsWin(p2.Points, p1.Points) => $"Win for {p2.Name}",
+                _ => $"{(Scores)player1.Points}-{(Scores)player2.Points}"
+            };
         }
 
         public void SetP1Score(int number)
@@ -141,11 +76,13 @@ namespace Tennis
         private void P1Score()
         {
             p1point++;
+            player1.Points++;
         }
 
         private void P2Score()
         {
             p2point++;
+            player2.Points++;
         }
 
         public void WonPoint(string player)
