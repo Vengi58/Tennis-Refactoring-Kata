@@ -4,15 +4,6 @@ namespace Tennis
 {
     public class TennisGame2 : ITennisGame
     {
-        private int p1point;
-        private int p2point;
-
-        private string p1res = "";
-        private string p2res = "";
-        private string player1Name;
-        private string player2Name;
-        private readonly TennisPlayer player1, player2;
-
         class TennisPlayer
         {
             public TennisPlayer(string name)
@@ -39,20 +30,14 @@ namespace Tennis
                 );
         }
 
+        private readonly TennisPlayer player1, player2;
+
         public TennisGame2(string player1Name, string player2Name)
         {
-            this.player1Name = player1Name;
-            p1point = 0;
-            this.player2Name = player2Name;
-
             player1 = new TennisPlayer(player1Name);
             player2 = new TennisPlayer(player2Name);
         }
 
-        private bool IsAll(int score1, int score2) => score1 == score2 && score1 < (int)Scores.Forty;
-        private bool IsDeuce(int score1, int score2) => score1 == score2 && score1 > (int)Scores.Thirty;
-        private bool IsAdvantage(int score1, int score2) => score1 - score2 == 1 && score2 >= (int)Scores.Forty;
-        private bool IsWin(int score1, int score2) => score1 - score2 > 1 && score1 > (int)Scores.Forty && score2 >= (int)Scores.Love;
         public string GetScore()
         {
             return (player1, player2) switch
@@ -67,38 +52,15 @@ namespace Tennis
             };
         }
 
-        public void SetP1Score(int number)
-        {
-            for (int i = 0; i < number; i++)
-            {
-                P1Score();
-            }
-        }
-
-        public void SetP2Score(int number)
-        {
-            for (var i = 0; i < number; i++)
-            {
-                P2Score();
-            }
-        }
-
-        private void P1Score()
-        {
-            p1point++;
-            player1.Points++;
-        }
-
-        private void P2Score()
-        {
-            p2point++;
-            player2.Points++;
-        }
-
         public void WonPoint(string playerName)
         {
             this[playerName].Points++;
         }
+
+        private bool IsAll(int score1, int score2) => score1 == score2 && score1 < (int)Scores.Forty;
+        private bool IsDeuce(int score1, int score2) => score1 == score2 && score1 > (int)Scores.Thirty;
+        private bool IsAdvantage(int score1, int score2) => score1 - score2 == 1 && score2 >= (int)Scores.Forty;
+        private bool IsWin(int score1, int score2) => score1 - score2 > 1 && score1 > (int)Scores.Forty && score2 >= (int)Scores.Love;
     }
 }
 
