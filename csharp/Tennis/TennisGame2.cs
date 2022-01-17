@@ -20,6 +20,13 @@ namespace Tennis
             public string Name { get; }
             public int Score { get; set; }
         }
+        enum Scores
+        {
+            Love = 0,
+            Fifteen = 1,
+            Thirty = 2,
+            Forty = 3
+        }
 
         public TennisGame2(string player1Name, string player2Name)
         {
