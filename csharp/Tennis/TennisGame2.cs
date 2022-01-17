@@ -10,6 +10,17 @@ namespace Tennis
         private string player1Name;
         private string player2Name;
 
+        private TennisPlayer player1, player2;
+        class TennisPlayer
+        {
+            public TennisPlayer(string name)
+            {
+                Name = name;
+            }
+            public string Name { get; }
+            public int Score { get; set; }
+        }
+
         public TennisGame2(string player1Name, string player2Name)
         {
             this.player1Name = player1Name;
